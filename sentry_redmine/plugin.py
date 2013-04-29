@@ -120,7 +120,8 @@ class RedminePlugin(IssuePlugin):
             raise forms.ValidationError('Unable to reach Redmine host: %s' % repr(e))
 
         if not 'issue' in data or not 'id' in data['issue']:
-            raise forms.ValidationError('Unable to create redmine ticket')
+            logging.getLogger('sentry.errors.redmine').error(data)
+            raise forms.ValidationError(u'Unable to create redmine ticket: %s' % data.get('errors', 'unknown error'))
 
         return data['issue']['id']
 
